@@ -17,6 +17,7 @@ public class TestViewController : UIViewController {
         
         view.addSubview(label)
         self.view = view
+        //test
     }
 }
 
