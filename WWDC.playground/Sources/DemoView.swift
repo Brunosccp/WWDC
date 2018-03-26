@@ -30,7 +30,7 @@ public class DemoView: UIView{
         //self.createRectangle()
         //self.createCircle()
         //self.createArc()
-        self.createAllLines(4)
+        self.createAllLines(2)
         //self.createWave()
         
         // Specify the fill color and apply it to the path.
@@ -60,6 +60,15 @@ public class DemoView: UIView{
             clockwise: true)
     }
     public func createAllLines(_ quantity : Int){
+        for _ in 1...quantity{
+            paths.append(UIBezierPath())
+        }
+        for i in 0..<quantity{
+            //self.createLine(height: (i+1) * self.frame.size.height / quantity, paths[i])
+        }
+        
+        
+        
         switch quantity {
         case 1:
             path = UIBezierPath()
@@ -67,11 +76,8 @@ public class DemoView: UIView{
             self.createLine(height: self.frame.size.height / 2, path)
             break
         case 2:
-            path = UIBezierPath()
-            path2 = UIBezierPath()
-            
-            self.createLine(height: self.frame.size.height / 3, path)
-            self.createLine(height: 2 * self.frame.size.height / 3, path2)
+            self.createLine(height: self.frame.size.height / 3, paths[0])
+            self.createLine(height: 2 * self.frame.size.height / 3, paths[1])
         case 3:
             path = UIBezierPath()
             path2 = UIBezierPath()
