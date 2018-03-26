@@ -11,6 +11,7 @@ public class DemoView: UIView{
      }
      */
     
+    var paths: [UIBezierPath]! = []
     var path: UIBezierPath!
     var path2: UIBezierPath!
     var path3: UIBezierPath!
@@ -29,19 +30,18 @@ public class DemoView: UIView{
         //self.createRectangle()
         //self.createCircle()
         //self.createArc()
-        self.createAllLines(2)
+        self.createAllLines(4)
         //self.createWave()
         
         // Specify the fill color and apply it to the path.
-
     }
     public func createRectangle() {
         // Initialize the path.
         path = UIBezierPath()
-        
+
         // Specify the point that the path should start get drawn.
         path.move(to: CGPoint(x: 0.0, y: self.frame.size.height/2))
-        
+
         // Create a line between the starting point and the bottom-left side of the view.
         path.addLine(to: CGPoint(x: self.frame.size.width, y: self.frame.size.height/2))
         path.lineWidth = 5.0
@@ -63,26 +63,36 @@ public class DemoView: UIView{
         switch quantity {
         case 1:
             path = UIBezierPath()
+            
             self.createLine(height: self.frame.size.height / 2, path)
             break
         case 2:
             path = UIBezierPath()
             path2 = UIBezierPath()
-            self.createLine(height: 2 * self.frame.size.height / 3, path)
-            self.createLine(height: self.frame.size.height / 3, path2)
-//        case 3:
-//            self.createLine(height: self.frame.size.height / 2)
-//            self.createLine(height: self.frame.size.height / 3)
-//            self.createLine(height: self.frame.size.height / 4)
-//        case 4:
-//            self.createLine(height: self.frame.size.height / 2)
-//            self.createLine(height: self.frame.size.height / 3)
-//            self.createLine(height: self.frame.size.height / 4)
-//            self.createLine(height: self.frame.size.height / 5)
+            
+            self.createLine(height: self.frame.size.height / 3, path)
+            self.createLine(height: 2 * self.frame.size.height / 3, path2)
+        case 3:
+            path = UIBezierPath()
+            path2 = UIBezierPath()
+            path3 = UIBezierPath()
+            
+            self.createLine(height: self.frame.size.height / 4, path)
+            self.createLine(height: 2 * self.frame.size.height / 4, path2)
+            self.createLine(height: 3 * self.frame.size.height / 4, path3)
+        case 4:
+            path = UIBezierPath()
+            path2 = UIBezierPath()
+            path3 = UIBezierPath()
+            path4 = UIBezierPath()
+            
+            self.createLine(height: self.frame.size.height / 5, path)
+            self.createLine(height: 2 * self.frame.size.height / 5, path2)
+            self.createLine(height: 3 * self.frame.size.height / 5, path3)
+            self.createLine(height: 4 * self.frame.size.height / 5, path4)
         default:
             return
         }
-        
         
     }
     public func createLine(height : CGFloat,_ path: UIBezierPath!){
