@@ -18,11 +18,9 @@ public class TestViewController : UIViewController {
         label.text = "Hello World!"
         label.textColor = .black
         
-        
         view.addSubview(label)
         self.view = view
-        
-        
+
     }
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -36,6 +34,9 @@ public class TestViewController : UIViewController {
         
         self.view.addSubview(demoView)
     }
+    
+
+
 }
 PlaygroundPage.current.liveView = TestViewController()
 
