@@ -33,6 +33,7 @@ public class TestViewController : UIViewController {
                                               height: height))
         
         self.view.addSubview(demoView)
+        
     }
     
 

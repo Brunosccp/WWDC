@@ -2,7 +2,6 @@ import Foundation
 import UIKit
 
 public class DemoView: UIView{
-    
     /*
      // Only override draw() if you perform custom drawing.
      // An empty implementation adversely affects performance during animation.
@@ -45,13 +44,18 @@ public class DemoView: UIView{
     }
     public func whichLine(){
         if(fingerPosition != nil){
-            print("fingerPosition: \(fingerPosition)")
+            var linhaAtual = 0
+            
             for i in 1...quantity{
                 if(fingerPosition!.y >= CGFloat(i) * self.frame.size.height / CGFloat(quantity + 1) - 30 && fingerPosition!.y <= CGFloat(i) * self.frame.size.height / CGFloat(quantity + 1) + 30){
+                    linhaAtual = i
                     print("esta é a linha \(i)")
                 }
             }
+            createLine(height: 40, path[linhaAtual-1])
+            
         }
+        
     }
     
     public func createRectangle() {
@@ -95,16 +99,19 @@ public class DemoView: UIView{
         UIColor.purple.setStroke()
         path.stroke()
     }
-    public func createWave(){
-        path[0] = UIBezierPath()
-        path[0].move(to: CGPoint(x: 0.0, y: self.frame.size.height))
-        path[0].addCurve(to: CGPoint(x: 50, y: self.frame.size.height - 30),
-                      controlPoint1: CGPoint(x: 15, y: self.frame.size.height),
-                      controlPoint2: CGPoint(x: 35, y: self.frame.size.height - 30))
-        path[0].addCurve(to: CGPoint(x: 100, y: self.frame.size.height),
-                      controlPoint1: CGPoint(x: 65, y: self.frame.size.height - 30),
-                      controlPoint2: CGPoint(x: 85, y: self.frame.size.height))
-        path[0].lineWidth = 5.0
+    public func createWave(height: CGFloat,_ path: UIBezierPath!){
+        path.move(to: CGPoint(x: 0.0, y: height))
+        path.addCurve(to: CGPoint(x: 50, y: height - 30),
+                      controlPoint1: CGPoint(x: 15, y: height),
+                      controlPoint2: CGPoint(x: 35, y: height - 30))
+        path.addCurve(to: CGPoint(x: 100, y: height),
+                      controlPoint1: CGPoint(x: 65, y: height - 30),
+                      controlPoint2: CGPoint(x: 85, y: height))
+        path.addLine(to: CGPoint(x:self.frame.size.width, y: height))
+        path.lineWidth = 5.0
+        
+        UIColor.purple.setStroke()
+        path.stroke()
     }
 }
 
