@@ -40,6 +40,8 @@ public class DemoView: UIView{
             fingerPosition = CGPoint(x: position.x, y: position.y)
         }
         whichLine()
+        print("chegou")
+        
         
     }
     public func whichLine(){
@@ -52,12 +54,32 @@ public class DemoView: UIView{
                     print("esta é a linha \(i)")
                 }
             }
-            createLine(height: 40, path[linhaAtual-1])
+            print("linha atual: \(linhaAtual-1)")
             
+            
+            if(linhaAtual != 0){
+                let height = CGFloat(linhaAtual) * (self.frame.size.height / CGFloat(quantity + 1))
+                createWave(height: height, crest: height - fingerPosition!.y, path[linhaAtual-1])
+            }
+            
+            
+            
+            //createLine(height: 40, path[linhaAtual-1])
+            
+//            var path2 = path[linhaAtual-1]
+//            path2.removeAllPoints()
+//            path2 = UIBezierPath()
+//            path2.move(to: CGPoint(x: 0.0, y: 40))
+//            path2.addLine(to: CGPoint(x: self.frame.size.width, y: 40))
+//            path2.lineWidth = 5.0
+            
+            
+            
+            self.setNeedsDisplay()
         }
         
     }
-    
+
     public func createRectangle() {
         // Initialize the path.
         path[0] = UIBezierPath()
@@ -85,6 +107,7 @@ public class DemoView: UIView{
     public func createAllLines(_ quantity : Int){
         for _ in 1...quantity{
             path.append(UIBezierPath())
+            //path.
         }
         for i in 1...quantity{
             self.createLine(height: CGFloat(i) * (self.frame.size.height / CGFloat(quantity + 1)), path[i - 1])
@@ -92,6 +115,7 @@ public class DemoView: UIView{
         
     }
     public func createLine(height : CGFloat,_ path: UIBezierPath!){
+        //path = nil
         path.move(to: CGPoint(x: 0.0, y: height))
         path.addLine(to: CGPoint(x: self.frame.size.width, y: height))
         path.lineWidth = 5.0
@@ -99,13 +123,14 @@ public class DemoView: UIView{
         UIColor.purple.setStroke()
         path.stroke()
     }
-    public func createWave(height: CGFloat,_ path: UIBezierPath!){
+    public func createWave(height: CGFloat, crest: CGFloat ,_ path: UIBezierPath!){
+        path.removeAllPoints()
         path.move(to: CGPoint(x: 0.0, y: height))
-        path.addCurve(to: CGPoint(x: 50, y: height - 30),
+        path.addCurve(to: CGPoint(x: 50, y: height - crest),
                       controlPoint1: CGPoint(x: 15, y: height),
-                      controlPoint2: CGPoint(x: 35, y: height - 30))
+                      controlPoint2: CGPoint(x: 35, y: height - crest))
         path.addCurve(to: CGPoint(x: 100, y: height),
-                      controlPoint1: CGPoint(x: 65, y: height - 30),
+                      controlPoint1: CGPoint(x: 65, y: height - crest),
                       controlPoint2: CGPoint(x: 85, y: height))
         path.addLine(to: CGPoint(x:self.frame.size.width, y: height))
         path.lineWidth = 5.0

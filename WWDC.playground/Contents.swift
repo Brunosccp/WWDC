@@ -26,16 +26,21 @@ public class TestViewController : UIViewController {
         super.viewDidAppear(animated)
         
         let width: CGFloat = self.view.frame.size.width
-        let height: CGFloat = self.view.frame.size.height - self.view.frame.size.height/15
-        let demoView = DemoView(frame: CGRect(x: 0,
-                                              y: self.view.frame.size.height/15,
-                                              width: width,
-                                              height: height))
+        let height: CGFloat = self.view.frame.size.height
+
+        let demoView = DemoView(frame: CGRect(x: 0, y: 668/15,
+                                                     width: 375,
+                                                     height: 623.466))
+        
+        
+
         
         self.view.addSubview(demoView)
+    }
+    @objc func updateDemoView(){
+        
         
     }
-    
 
 
 }
