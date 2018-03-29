@@ -12,9 +12,9 @@ public class DemoView: UIView{
     
     var path: [UIBezierPath]! = []
     var fingerPosition: CGPoint?
-    var quantity : Int = 6
+    var quantity : Int = 4
     var inicio = true
-    var notas: [(Int, Int, Int, Int)] = []
+    var notas: [(CGFloat, CGFloat, CGFloat, CGFloat)] = []
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -56,42 +56,49 @@ public class DemoView: UIView{
         }
     }
     
-    public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if let touch = touches.first {
-            let position = touch.location(in: self)
-            fingerPosition = CGPoint(x: position.x, y: position.y)
-        }
-        whichLine()
-    }
     public func whichLine(){
         if(fingerPosition != nil){
             var linhaAtual = 0
+            var tempoAtual = 0
+            let waveHeight = CGFloat(50)
             
             for i in 1...quantity{
-                if(fingerPosition!.y >= CGFloat(i) * self.frame.size.height / CGFloat(quantity + 1) - 30 && fingerPosition!.y <= CGFloat(i) * self.frame.size.height / CGFloat(quantity + 1) + 30){
+                if(fingerPosition!.y >= CGFloat(i) * self.frame.size.height / CGFloat(quantity + 1) - waveHeight && fingerPosition!.y <= CGFloat(i) * self.frame.size.height / CGFloat(quantity + 1) + waveHeight){
                     linhaAtual = i
                     //print("esta é a linha \(i)")
                 }
             }
+            for i in 0...3{
+                if(fingerPosition!.x >= CGFloat(i) * self.frame.size.width / CGFloat (4)
+                    &&
+                    fingerPosition!.x <= CGFloat(i+1) * self.frame.size.width / CGFloat(4) ){
+                    tempoAtual = i+1
+                    //print("este é o tempo \(i+1)")
+                }
+            }
+            let height = CGFloat(linhaAtual) * (self.frame.size.height / CGFloat(quantity + 1))
+            let crest = height - fingerPosition!.y
             
-            
-            if(linhaAtual != 0){
-                let height = CGFloat(linhaAtual) * (self.frame.size.height / CGFloat(quantity + 1))
-                createWave(height: height, crest: height - fingerPosition!.y, path[linhaAtual-1])
+            //creating wave with pan
+            switch(tempoAtual){
+                notas[linhaAtual] = (crest, crest, crest, crest)
             }
             
+            if(linhaAtual != 0){
+                createWave(height: height, linhaAtual, path[linhaAtual-1])
+            }
             
-            
-            //createLine(height: 40, path[linhaAtual-1])
-            
-//            var path2 = path[linhaAtual-1]
-//            path2.removeAllPoints()
-//            path2 = UIBezierPath()
-//            path2.move(to: CGPoint(x: 0.0, y: 40))
-//            path2.addLine(to: CGPoint(x: self.frame.size.width, y: 40))
-//            path2.lineWidth = 5.0
-            
-            
+//            for i in 1...7{
+//                if(crest >= (CGFloat(i) * waveHeight / 8)){
+//                    print("é a nota \(i)")
+//                }
+//                else if(crest <= (CGFloat(i) * waveHeight / -8)){
+//                    print("é a nota -\(i)")
+//                }
+//                else if((crest <= waveHeight / 8) && (crest >= waveHeight / -8)){
+//                    print("é a nota 0")
+//                }
+//            }
             
             self.setNeedsDisplay()
         }
@@ -125,7 +132,6 @@ public class DemoView: UIView{
     public func createAllLines(_ quantity : Int){
         for _ in 1...quantity{
             path.append(UIBezierPath())
-            //path.
         }
         for i in 1...quantity{
             self.createLine(height: CGFloat(i) * (self.frame.size.height / CGFloat(quantity + 1)), path[i - 1])
@@ -133,7 +139,6 @@ public class DemoView: UIView{
         
     }
     public func createLine(height : CGFloat,_ path: UIBezierPath!){
-        //path = nil
         path.move(to: CGPoint(x: 0.0, y: height))
         path.addLine(to: CGPoint(x: self.frame.size.width, y: height))
         path.lineWidth = 5.0
@@ -152,20 +157,37 @@ public class DemoView: UIView{
         UIColor.black.setStroke()
         timeLines.stroke()
     }
-    public func createWave(height: CGFloat, crest: CGFloat ,_ path: UIBezierPath!){
+    public func createWave(height: CGFloat,_ linhaAtual: Int,_ path: UIBezierPath!){
         path.removeAllPoints()
-        let width = 1 * self.frame.size.width / 5 - 50
-        
-        path.move(to: CGPoint(x: width, y: height))
-        path.addCurve(to: CGPoint(x: width + 50, y: height - crest),
-                      controlPoint1: CGPoint(x: width + 15, y: height),
-                      controlPoint2: CGPoint(x: width + 35, y: height - crest))
-        path.addCurve(to: CGPoint(x: width + 100, y: height),
-                      controlPoint1: CGPoint(x: width + 65, y: height - crest),
-                      controlPoint2: CGPoint(x: width + 85, y: height))
-        path.addLine(to: CGPoint(x:self.frame.size.width, y: height))
-        path.lineWidth = 5.0
-        
+        var note : CGFloat = -99
+        for i in 0...3{
+            switch(i){
+            case 0:
+                note = notas[linhaAtual].0
+            case 1:
+                note = notas[linhaAtual].1
+            case 2:
+                note = notas[linhaAtual].2
+            case 3:
+                note = notas[linhaAtual].3
+            default:
+                print("DEU RUIM FEIO")
+            }
+            
+            //print("note: \(note)")
+            let width = CGFloat(i+1) * self.frame.size.width / 5 - 40
+            if(i == 0){ path.move(to: CGPoint(x: width, y: height))}
+            else {path.addLine(to: CGPoint(x: width, y: height))}
+            path.addCurve(to: CGPoint(x: width + 40, y: height - note),
+                          controlPoint1: CGPoint(x: width + 10, y: height),
+                          controlPoint2: CGPoint(x: width + 30, y: height - note))
+            path.addCurve(to: CGPoint(x: width + 80, y: height),
+                          controlPoint1: CGPoint(x: width + 50, y: height - note),
+                          controlPoint2: CGPoint(x: width + 70, y: height))
+            path.addLine(to: CGPoint(x: CGFloat(i+2) * self.frame.size.width / 5, y: height))
+            path.lineWidth = 5.0
+            
+        }
         UIColor.purple.setStroke()
         path.stroke()
     }
