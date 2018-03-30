@@ -80,12 +80,23 @@ public class DemoView: UIView{
             let crest = height - fingerPosition!.y
             
             //creating wave with pan
-            switch(tempoAtual){
-                notas[linhaAtual] = (crest, crest, crest, crest)
-            }
-            
             if(linhaAtual != 0){
-                createWave(height: height, linhaAtual, path[linhaAtual-1])
+                linhaAtual-=1
+                print("linhaAtual: \(linhaAtual), e tempoAtual: \(tempoAtual)")
+                switch(tempoAtual){
+                case 1:
+                    notas[linhaAtual] = (crest, notas[linhaAtual].1, notas[linhaAtual].2, notas[linhaAtual].3)
+                case 2:
+                    notas[linhaAtual] = (notas[linhaAtual].0, crest, notas[linhaAtual].2, notas[linhaAtual].3)
+                case 3:
+                    notas[linhaAtual] = (notas[linhaAtual].0, notas[linhaAtual].1, crest, notas[linhaAtual].3)
+                case 4:
+                    notas[linhaAtual] = (notas[linhaAtual].0, notas[linhaAtual].1, notas[linhaAtual].2, crest)
+                default:
+                    print("Deu ruim grosso")
+                }
+                print("linhaAtual: \(linhaAtual), e tempoAtual: \(tempoAtual)")
+                createWave(height: height, linhaAtual, path[linhaAtual])
             }
             
 //            for i in 1...7{
