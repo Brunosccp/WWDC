@@ -179,7 +179,7 @@ public class DemoView: UIView{
             //creating wave with pan
             if(linhaAtual != 0){
                 linhaAtual-=1
-                print("linhaAtual: \(linhaAtual), e tempoAtual: \(tempoAtual)")
+                //print("linhaAtual: \(linhaAtual), e tempoAtual: \(tempoAtual)")
                 switch(tempoAtual){
                 case 1:
                     notas[linhaAtual] = (crest, notas[linhaAtual].1, notas[linhaAtual].2, notas[linhaAtual].3)
