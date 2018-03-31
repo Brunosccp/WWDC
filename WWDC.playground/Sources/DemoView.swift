@@ -17,7 +17,7 @@ public class DemoView: UIView{
     var inicio = true
     var notas: [(CGFloat, CGFloat, CGFloat, CGFloat)] = []
     var tempo = Timer()
-    var quarter = 0
+    var quarter = 1
     
     var player: [AVAudioPlayer?] = []
     
@@ -65,17 +65,35 @@ public class DemoView: UIView{
     }
     
     @objc func startMusic(){
+        var noteCrest : CGFloat = 0
+        
+        switch quarter {
+        case 1:
+            noteCrest = notas[0].0
+            quarter += 1
+        case 2:
+            noteCrest = notas[0].1
+            quarter += 1
+        case 3:
+            noteCrest = notas[0].2
+            quarter += 1
+        case 4:
+            noteCrest = notas[0].3
+            quarter = 1
+        default:
+            print("ERROR: quarter out of index")
+        }
         
         //no note
-        if((notas[0].0 <= 50 / 8) && (notas[0].0 >= 50 / -8)){
+        if((noteCrest <= 50 / 8) && (noteCrest >= 50 / -8)){
             print("é a nota 0")
         }else{  //theres a note
             for i in 1...7{
-                if(notas[0].0 >= (CGFloat(i) * 50 / 8) && notas[0].0 <= (CGFloat(i+1) * 50 / 8)){
+                if(noteCrest >= (CGFloat(i) * 50 / 8) && noteCrest <= (CGFloat(i+1) * 50 / 8)){
                     print("é a nota \(i)")
                     playNote(instrument: "piano", getNoteName(i) + "2")
                 }
-                else if(notas[0].0 <= (CGFloat(i) * 50 / -8) && notas[0].0 >= (CGFloat(i+1) * 50 / -8)){
+                else if(noteCrest <= (CGFloat(i) * 50 / -8) && noteCrest >= (CGFloat(i+1) * 50 / -8)){
                     print("é a nota -\(i)")
                     playNote(instrument: "piano", getNoteName(i) + "1")
                 }
@@ -84,7 +102,6 @@ public class DemoView: UIView{
         
         
         //playNote(instrument: "piano", "A2")
-        quarter+=1
     }
     func playNote(instrument: String,_ note: String){
         let path = instrument + "/" + note
