@@ -66,42 +66,42 @@ public class DemoView: UIView{
     
     @objc func startMusic(){
         var noteCrest : CGFloat = 0
-        
-        switch quarter {
-        case 1:
-            noteCrest = notas[0].0
-            quarter += 1
-        case 2:
-            noteCrest = notas[0].1
-            quarter += 1
-        case 3:
-            noteCrest = notas[0].2
-            quarter += 1
-        case 4:
-            noteCrest = notas[0].3
-            quarter = 1
-        default:
-            print("ERROR: quarter out of index")
-        }
-        
-        //no note
-        if((noteCrest <= 50 / 8) && (noteCrest >= 50 / -8)){
-            print("é a nota 0")
-        }else{  //theres a note
-            for i in 1...7{
-                if(noteCrest >= (CGFloat(i) * 50 / 8) && noteCrest <= (CGFloat(i+1) * 50 / 8)){
-                    print("é a nota \(i)")
-                    playNote(instrument: "piano", getNoteName(i) + "2")
-                }
-                else if(noteCrest <= (CGFloat(i) * 50 / -8) && noteCrest >= (CGFloat(i+1) * 50 / -8)){
-                    print("é a nota -\(i)")
-                    playNote(instrument: "piano", getNoteName(i) + "1")
+        for i in 0..<quantity{
+            switch quarter {
+            case 1:
+                noteCrest = notas[i].0
+            case 2:
+                noteCrest = notas[i].1
+            case 3:
+                noteCrest = notas[i].2
+            case 4:
+                noteCrest = notas[i].3
+            default:
+                print("ERROR: quarter out of index")
+            }
+            
+            //no note
+            if((noteCrest <= 50 / 8) && (noteCrest >= 50 / -8)){
+                print("é a nota 0")
+            }else{  //theres a note
+                for i in 1...7{
+                    if(noteCrest >= (CGFloat(i) * 50 / 8) && noteCrest <= (CGFloat(i+1) * 50 / 8)){
+                        //print("é a nota \(i)")
+                        playNote(instrument: "piano", getNoteName(i) + "2")
+                    }
+                    else if(noteCrest <= (CGFloat(i) * 50 / -8) && noteCrest >= (CGFloat(i+1) * 50 / -8)){
+                        //print("é a nota -\(i)")
+                        playNote(instrument: "piano", getNoteName(i) + "1")
+                    }
                 }
             }
         }
-        
-        
-        //playNote(instrument: "piano", "A2")
+        if quarter >= 4{
+            quarter = 1
+        }else {
+            quarter += 1
+        }
+    
     }
     func playNote(instrument: String,_ note: String){
         let path = instrument + "/" + note
