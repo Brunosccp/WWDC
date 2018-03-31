@@ -18,6 +18,7 @@ public class DemoView: UIView{
     var notas: [(CGFloat, CGFloat, CGFloat, CGFloat)] = []
     var tempo = Timer()
     var quarter = 1
+    var compass = 0
     
     var player: [AVAudioPlayer?] = []
     
@@ -41,7 +42,6 @@ public class DemoView: UIView{
         
         if(inicio == true){
             createGestureRecognizerPan()
-            tempo = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(startMusic), userInfo: nil, repeats: true)
             
             inicio = false
         }
@@ -64,6 +64,9 @@ public class DemoView: UIView{
         }
     }
     
+    public func startTimer(){
+        tempo = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(startMusic), userInfo: nil, repeats: true)
+    }
     @objc func startMusic(){
         var noteCrest : CGFloat = 0
         for i in 0..<quantity{
@@ -82,7 +85,7 @@ public class DemoView: UIView{
             
             //no note
             if((noteCrest <= 50 / 8) && (noteCrest >= 50 / -8)){
-                print("é a nota 0")
+                //print("é a nota 0")
             }else{  //theres a note
                 for i in 1...7{
                     if(noteCrest >= (CGFloat(i) * 50 / 8) && noteCrest <= (CGFloat(i+1) * 50 / 8)){
@@ -98,6 +101,11 @@ public class DemoView: UIView{
         }
         if quarter >= 4{
             quarter = 1
+            if((compass+1) * quantity >= notas.count){
+                tempo.invalidate()
+                print("terminou")
+            }
+            
         }else {
             quarter += 1
         }
