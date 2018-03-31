@@ -1,5 +1,6 @@
 import Foundation
 import UIKit
+import AVFoundation
 
 public class DemoView: UIView{
     /*
@@ -15,6 +16,11 @@ public class DemoView: UIView{
     var quantity : Int = 4
     var inicio = true
     var notas: [(CGFloat, CGFloat, CGFloat, CGFloat)] = []
+    var tempo = Timer()
+    var quarter = 0
+    
+    var player: [AVAudioPlayer?] = []
+    
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -35,6 +41,8 @@ public class DemoView: UIView{
         
         if(inicio == true){
             createGestureRecognizerPan()
+            tempo = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(startMusic), userInfo: nil, repeats: true)
+            
             inicio = false
         }
         
@@ -45,7 +53,7 @@ public class DemoView: UIView{
         
         self.addGestureRecognizer(panGestureRecognizer)
     }
-    
+
     @objc func handlePan(sender: UIPanGestureRecognizer){
         if sender.state == UIGestureRecognizerState.began {
         }
@@ -53,6 +61,70 @@ public class DemoView: UIView{
             //print("posicao: \(sender.location(in: self))")
             fingerPosition = sender.location(in: self)
             whichLine()
+        }
+    }
+    
+    @objc func startMusic(){
+        
+        //no note
+        if((notas[0].0 <= 50 / 8) && (notas[0].0 >= 50 / -8)){
+            print("é a nota 0")
+        }else{  //theres a note
+            for i in 1...7{
+                if(notas[0].0 >= (CGFloat(i) * 50 / 8) && notas[0].0 <= (CGFloat(i+1) * 50 / 8)){
+                    print("é a nota \(i)")
+                    playNote(instrument: "piano", getNoteName(i) + "2")
+                }
+                else if(notas[0].0 <= (CGFloat(i) * 50 / -8) && notas[0].0 >= (CGFloat(i+1) * 50 / -8)){
+                    print("é a nota -\(i)")
+                    playNote(instrument: "piano", getNoteName(i) + "1")
+                }
+            }
+        }
+        
+        
+        //playNote(instrument: "piano", "A2")
+        quarter+=1
+    }
+    func playNote(instrument: String,_ note: String){
+        let path = instrument + "/" + note
+        
+        guard let url = Bundle.main.url(forResource: path, withExtension: "mp3") else { return }
+        do {
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
+            try AVAudioSession.sharedInstance().setActive(true)
+            /* The following line is required for the player to work on iOS 11. Change the file type accordingly*/
+            if (player.count >= 16){  player.remove(at: player.count-1)}
+            player.insert(try AVAudioPlayer(contentsOf: url, fileTypeHint: AVFileType.mp3.rawValue), at: 0)
+            
+            /* iOS 10 and earlier require the following line:
+             player = try AVAudioPlayer(contentsOf: url, fileTypeHint: AVFileTypeMPEGLayer3) */
+            
+            player[0]!.play()
+            //print("tamanho: \(player.count)")
+            
+        } catch let error {
+            print(error.localizedDescription)
+        }
+    }
+    func getNoteName(_ number: Int) -> String{
+    switch(number){
+        case 1:
+            return "C"
+        case 2:
+            return "D"
+        case 3:
+            return "E"
+        case 4:
+            return "F"
+        case 5:
+            return "G"
+        case 6:
+            return "A"
+        case 7:
+            return "B"
+        default:
+            return "DEU RUIM"
         }
     }
     
@@ -95,38 +167,17 @@ public class DemoView: UIView{
                 default:
                     print("Deu ruim grosso")
                 }
-                print("linhaAtual: \(linhaAtual), e tempoAtual: \(tempoAtual)")
+                //print("linhaAtual: \(linhaAtual), e tempoAtual: \(tempoAtual)")
                 createWave(height: height, linhaAtual, path[linhaAtual])
             }
             
-//            for i in 1...7{
-//                if(crest >= (CGFloat(i) * waveHeight / 8)){
-//                    print("é a nota \(i)")
-//                }
-//                else if(crest <= (CGFloat(i) * waveHeight / -8)){
-//                    print("é a nota -\(i)")
-//                }
-//                else if((crest <= waveHeight / 8) && (crest >= waveHeight / -8)){
-//                    print("é a nota 0")
-//                }
-//            }
+
             
             self.setNeedsDisplay()
         }
         
     }
 
-    public func createRectangle() {
-        // Initialize the path.
-        path[0] = UIBezierPath()
-
-        // Specify the point that the path should start get drawn.
-        path[0].move(to: CGPoint(x: 0.0, y: self.frame.size.height/2))
-
-        // Create a line between the starting point and the bottom-left side of the view.
-        path[0].addLine(to: CGPoint(x: self.frame.size.width, y: self.frame.size.height/2))
-        path[0].lineWidth = 5.0
-    }
     public func createCircle(){
         path[0] = UIBezierPath(ovalIn: CGRect(x: self.frame.size.width/2 - self.frame.size.height/2,
                                            y: 0.0,
