@@ -21,6 +21,8 @@ public class DemoView: UIView{
     public var compass = 0
     var lastCompass = 0
     
+    var noteLabel = UILabel()
+    
     var player: [AVAudioPlayer?] = []
     
     
@@ -62,6 +64,9 @@ public class DemoView: UIView{
             //print("posicao: \(sender.location(in: self))")
             fingerPosition = sender.location(in: self)
             whichLine()
+        }
+        if sender.state == UIGestureRecognizerState.ended{
+            noteLabel.text = nil
         }
     }
     
@@ -243,6 +248,35 @@ public class DemoView: UIView{
                 }
                 //print("linhaAtual: \(linhaAtual), e tempoAtual: \(tempoAtual)")
                 createWave(height: height, (compass * quantity) + linhaAtual, path[linhaAtual])
+                
+                
+                
+                //putting label when creating wave
+                if((crest <= 50 / 8) && (crest >= 50 / -8)){    //no note
+                    noteLabel.text = nil
+                }else{  //there's a note
+                    for i in 1...7{
+                        if(crest >= (CGFloat(i) * 50 / 8) && crest <= (CGFloat(i+1) * 50 / 8)){
+                            //print("é a nota \(i)")
+                            noteLabel.text = nil
+                            noteLabel = UILabel(frame: CGRect(x: CGFloat(tempoAtual) * self.frame.size.width / 5 - 30,
+                                y: height - crest - 20, width: 30, height: 20))
+                            noteLabel.text = "\(getNoteName(i))"
+                            noteLabel.textAlignment = .center
+                            
+                            self.addSubview(noteLabel)
+                        }
+                        else if(crest <= (CGFloat(i) * 50 / -8) && crest >= (CGFloat(i+1) * 50 / -8)){
+                            noteLabel.text = nil
+                            noteLabel = UILabel(frame: CGRect(x: CGFloat(tempoAtual) * self.frame.size.width / 5 - 30,
+                                                              y:height - crest + 0, width: 30, height: 20))
+                            noteLabel.text = "\(getNoteName(i))"
+                            noteLabel.textAlignment = .center
+                            
+                            self.addSubview(noteLabel)
+                        }
+                    }
+                }
             }
             self.setNeedsDisplay()
         }

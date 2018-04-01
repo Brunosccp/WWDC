@@ -18,14 +18,20 @@ public class TestViewController : UIViewController {
         //creating buttons
         let playButton = UIButton(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
         let nextCompass = UIButton(frame: CGRect(x: 375 - 50, y: 0, width: 50, height: 50))
-        let previousCompass = UIButton(frame: CGRect(x: 375 - 100, y: 0, width: 50, height: 50))
+        let previousCompass = UIButton(frame: CGRect(x: 375 - 150, y: 0, width: 50, height: 50))
         
         //creating text field
-        bpmField = UITextField(frame: CGRect(x: 375 - 200, y: 10, width: 50, height: 25))
+        bpmField = UITextField(frame: CGRect(x: 125, y: 12.5, width: 50, height: 20))
         
         //creating labels
-        compassLabel = UILabel(frame: CGRect(x: 50, y: 0, width: 50, height: 50))
+        compassLabel = UILabel(frame: CGRect(x: 375 - 100, y: 0, width: 50, height: 50))
+        let bpmLabel = UILabel(frame: CGRect(x: 75, y: 12.5, width: 50, height: 20))
+        bpmLabel.text = "Bpm:"
+        bpmLabel.textAlignment = .right
+        
         compassLabel.text = "\(demoView.compass+1)/\(demoView.notas.count/demoView.quantity)"
+        compassLabel.textAlignment = .center
+        
         
         playButton.backgroundColor = .blue
         nextCompass.backgroundColor = .black
@@ -34,12 +40,14 @@ public class TestViewController : UIViewController {
         
         bpmField.keyboardType = UIKeyboardType.decimalPad
         bpmField.text = "80"
+        bpmField.textAlignment = .center
         
         view.addSubview(playButton)
         view.addSubview(nextCompass)
         view.addSubview(previousCompass)
         view.addSubview(bpmField)
         view.addSubview(compassLabel)
+        view.addSubview(bpmLabel)
         
         playButton.addTarget(self, action: #selector(playAction), for: .touchUpInside)
         nextCompass.addTarget(self, action: #selector(nextCompassAction), for: .touchUpInside)
@@ -58,20 +66,20 @@ public class TestViewController : UIViewController {
             demoView.startTimer(bpm: 80.0)
         }
         
-        
-        
     }
     @objc func nextCompassAction(){
         print("compasso++")
-        compassLabel.text = "\(demoView.compass+1)/\(demoView.notas.count/demoView.quantity)"
         //self.loadView()
+        
         demoView.nextCompass()
+        
+        compassLabel.text = "\(demoView.compass+1)/\(demoView.notas.count/demoView.quantity)"
+
     }
     @objc func previousCompassAction(){
         print("compasso--")
-        compassLabel.text = "\(demoView.compass+1)/\(demoView.notas.count/demoView.quantity)"
-        //self.loadView()
         demoView.previousCompass()
+        compassLabel.text = "\(demoView.compass+1)/\(demoView.notas.count/demoView.quantity)"
     }
     
     public override func viewDidAppear(_ animated: Bool) {
