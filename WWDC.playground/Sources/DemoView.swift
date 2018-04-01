@@ -119,6 +119,7 @@ public class DemoView: UIView{
             if((compass) * quantity >= notas.count){
                 tempo.invalidate()
                 print("terminou")
+                compass -= 1
                 return
             }
             clearPaths()
@@ -208,7 +209,6 @@ public class DemoView: UIView{
             var linhaAtual = 0
             var tempoAtual = 0
             let waveHeight = CGFloat(50)
-            
             for i in 1...quantity{
                 if(fingerPosition!.y >= CGFloat(i) * self.frame.size.height / CGFloat(quantity + 1) - waveHeight && fingerPosition!.y <= CGFloat(i) * self.frame.size.height / CGFloat(quantity + 1) + waveHeight){
                     linhaAtual = i
@@ -225,7 +225,6 @@ public class DemoView: UIView{
             }
             let height = CGFloat(linhaAtual) * (self.frame.size.height / CGFloat(quantity + 1))
             let crest = height - fingerPosition!.y
-            
             //creating wave with pan
             if(linhaAtual != 0){
                 linhaAtual-=1
