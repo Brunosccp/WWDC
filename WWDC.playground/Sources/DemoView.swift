@@ -67,7 +67,9 @@ public class DemoView: UIView{
     
     public func startTimer(){
         compass = 0
+        
         clearPaths()
+        remakePaths()
         self.setNeedsDisplay()
         
         print("chegou")
@@ -76,7 +78,7 @@ public class DemoView: UIView{
     @objc func startMusic(){
         self.setNeedsDisplay()
         
-        print("compasso: \(compass)")
+        //print("compasso: \(compass)")
         
         var noteCrest : CGFloat = 0
         for i in 0..<quantity{
@@ -113,14 +115,15 @@ public class DemoView: UIView{
             quarter = 1
             compass += 1
             
-            clearPaths()
-            self.setNeedsDisplay()
-            
             print("compass: \((compass)) e notas.count: \(notas.count)")
             if((compass) * quantity >= notas.count){
                 tempo.invalidate()
                 print("terminou")
+                return
             }
+            clearPaths()
+            remakePaths()
+            self.setNeedsDisplay()
             
         }else {
             quarter += 1
@@ -141,7 +144,7 @@ public class DemoView: UIView{
             /* iOS 10 and earlier require the following line:
              player = try AVAudioPlayer(contentsOf: url, fileTypeHint: AVFileTypeMPEGLayer3) */
             
-            player[0]!.play()
+            //player[0]!.play()
             //print("tamanho: \(player.count)")
             
         } catch let error {
@@ -170,20 +173,32 @@ public class DemoView: UIView{
     }
     
     public func nextCompass(){
-        for _ in 1...quantity{
-            notas.append((0, 0, 0, 0))
-        }
-        print("tamanho de notas: \(notas.count)")
         compass += 1
-        print("crests da linha 1: \(notas[4].0), \(notas[4].1), \(notas[4].2), \(notas[4].3)")
+        
+        if(compass >= notas.count / quantity){
+            for _ in 1...quantity{
+                notas.append((0, 0, 0, 0))
+            }
+        }
+        
+        print("tamanho de notas: \(notas.count)")
+        //print("crests da linha 1: \(notas[4].0), \(notas[4].1), \(notas[4].2), \(notas[4].3)")
         
         clearPaths()
+        remakePaths()
         self.setNeedsDisplay()
         
     }
     public func previousCompass(){
         if(compass > 0){
             compass -= 1
+            print("crests da linha 1: \(notas[4].0), \(notas[4].1), \(notas[4].2), \(notas[4].3)")
+            
+            clearPaths()
+            remakePaths()
+            self.setNeedsDisplay()
+            
+            
         }else{
             return
         }
@@ -231,9 +246,6 @@ public class DemoView: UIView{
                 //print("linhaAtual: \(linhaAtual), e tempoAtual: \(tempoAtual)")
                 createWave(height: height, (compass * quantity) + linhaAtual, path[linhaAtual])
             }
-            
-
-            
             self.setNeedsDisplay()
         }
         
@@ -300,12 +312,21 @@ public class DemoView: UIView{
         UIColor.purple.setStroke()
         path.stroke()
     }
+    
     public func clearPaths(){
         for i in 0..<path.count{
             path[i].removeAllPoints()
         }
     }
-
+    public func remakePaths(){
+        var height : CGFloat
+        
+        for i in 0..<quantity{
+            height = CGFloat(i+1) * (self.frame.size.height / CGFloat(quantity + 1))
+            createWave(height: height, (compass * quantity) + i, path[i])
+        }
+    }
+    
 }
 
 extension CGFloat {

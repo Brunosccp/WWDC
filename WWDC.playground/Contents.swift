@@ -35,7 +35,7 @@ public class TestViewController : UIViewController {
     }
     
     @objc func playAction(){
-        print("foi apertado")
+        print("comecou")
         demoView.startTimer()
     }
     @objc func nextCompassAction(){
@@ -44,6 +44,7 @@ public class TestViewController : UIViewController {
     }
     @objc func previousCompassAction(){
         print("compasso--")
+        demoView.previousCompass()
     }
     
     public override func viewDidAppear(_ animated: Bool) {
