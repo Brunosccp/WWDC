@@ -29,18 +29,18 @@ public class TestViewController : UIViewController {
         playButton.addTarget(self, action: #selector(playAction), for: .touchUpInside)
         nextCompass.addTarget(self, action: #selector(nextCompassAction), for: .touchUpInside)
         previousCompass.addTarget(self, action: #selector(previousCompassAction), for: .touchUpInside)
-        
-        //creating compass buttons
+
         
         self.view = view
-
     }
+    
     @objc func playAction(){
         print("foi apertado")
         demoView.startTimer()
     }
     @objc func nextCompassAction(){
         print("compasso++")
+        demoView.nextCompass()
     }
     @objc func previousCompassAction(){
         print("compasso--")

@@ -19,6 +19,7 @@ public class DemoView: UIView{
     var tempo = Timer()
     var quarter = 1
     var compass = 0
+    var lastCompass = 0
     
     var player: [AVAudioPlayer?] = []
     
@@ -65,20 +66,29 @@ public class DemoView: UIView{
     }
     
     public func startTimer(){
+        compass = 0
+        clearPaths()
+        self.setNeedsDisplay()
+        
+        print("chegou")
         tempo = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(startMusic), userInfo: nil, repeats: true)
     }
     @objc func startMusic(){
+        self.setNeedsDisplay()
+        
+        print("compasso: \(compass)")
+        
         var noteCrest : CGFloat = 0
         for i in 0..<quantity{
             switch quarter {
             case 1:
-                noteCrest = notas[i].0
+                noteCrest = notas[(compass * quantity) + i].0
             case 2:
-                noteCrest = notas[i].1
+                noteCrest = notas[(compass * quantity) + i].1
             case 3:
-                noteCrest = notas[i].2
+                noteCrest = notas[(compass * quantity) + i].2
             case 4:
-                noteCrest = notas[i].3
+                noteCrest = notas[(compass * quantity) + i].3
             default:
                 print("ERROR: quarter out of index")
             }
@@ -101,7 +111,13 @@ public class DemoView: UIView{
         }
         if quarter >= 4{
             quarter = 1
-            if((compass+1) * quantity >= notas.count){
+            compass += 1
+            
+            clearPaths()
+            self.setNeedsDisplay()
+            
+            print("compass: \((compass)) e notas.count: \(notas.count)")
+            if((compass) * quantity >= notas.count){
                 tempo.invalidate()
                 print("terminou")
             }
@@ -153,6 +169,26 @@ public class DemoView: UIView{
         }
     }
     
+    public func nextCompass(){
+        for _ in 1...quantity{
+            notas.append((0, 0, 0, 0))
+        }
+        print("tamanho de notas: \(notas.count)")
+        compass += 1
+        print("crests da linha 1: \(notas[4].0), \(notas[4].1), \(notas[4].2), \(notas[4].3)")
+        
+        clearPaths()
+        self.setNeedsDisplay()
+        
+    }
+    public func previousCompass(){
+        if(compass > 0){
+            compass -= 1
+        }else{
+            return
+        }
+    }
+    
     public func whichLine(){
         if(fingerPosition != nil){
             var linhaAtual = 0
@@ -182,18 +218,18 @@ public class DemoView: UIView{
                 //print("linhaAtual: \(linhaAtual), e tempoAtual: \(tempoAtual)")
                 switch(tempoAtual){
                 case 1:
-                    notas[linhaAtual] = (crest, notas[linhaAtual].1, notas[linhaAtual].2, notas[linhaAtual].3)
+                    notas[(compass * quantity) + linhaAtual] = (crest, notas[(compass * quantity) + linhaAtual].1, notas[(compass * quantity) + linhaAtual].2, notas[(compass * quantity) + linhaAtual].3)
                 case 2:
-                    notas[linhaAtual] = (notas[linhaAtual].0, crest, notas[linhaAtual].2, notas[linhaAtual].3)
+                    notas[(compass * quantity) + linhaAtual] = (notas[(compass * quantity) + linhaAtual].0, crest, notas[(compass * quantity) + linhaAtual].2, notas[(compass * quantity) + linhaAtual].3)
                 case 3:
-                    notas[linhaAtual] = (notas[linhaAtual].0, notas[linhaAtual].1, crest, notas[linhaAtual].3)
+                    notas[(compass * quantity) + linhaAtual] = (notas[(compass * quantity) + linhaAtual].0, notas[(compass * quantity) + linhaAtual].1, crest, notas[(compass * quantity) + linhaAtual].3)
                 case 4:
-                    notas[linhaAtual] = (notas[linhaAtual].0, notas[linhaAtual].1, notas[linhaAtual].2, crest)
+                    notas[(compass * quantity) + linhaAtual] = (notas[(compass * quantity) + linhaAtual].0, notas[(compass * quantity) + linhaAtual].1, notas[(compass * quantity) + linhaAtual].2, crest)
                 default:
-                    print("Deu ruim grosso")
+                    print("ERROR: tempoAtual out of index")
                 }
                 //print("linhaAtual: \(linhaAtual), e tempoAtual: \(tempoAtual)")
-                createWave(height: height, linhaAtual, path[linhaAtual])
+                createWave(height: height, (compass * quantity) + linhaAtual, path[linhaAtual])
             }
             
 
@@ -201,20 +237,6 @@ public class DemoView: UIView{
             self.setNeedsDisplay()
         }
         
-    }
-
-    public func createCircle(){
-        path[0] = UIBezierPath(ovalIn: CGRect(x: self.frame.size.width/2 - self.frame.size.height/2,
-                                           y: 0.0,
-                                           width: self.frame.size.height,
-                                           height: self.frame.size.height))
-    }
-    public func createArc(){
-        path[0] = UIBezierPath(arcCenter: CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2),
-            radius: self.frame.size.height/2,
-            startAngle: CGFloat(180).toRadians(),
-            endAngle: CGFloat(0).toRadians(),
-            clockwise: true)
     }
     public func createAllLines(_ quantity : Int){
         for _ in 1...quantity{
@@ -278,6 +300,12 @@ public class DemoView: UIView{
         UIColor.purple.setStroke()
         path.stroke()
     }
+    public func clearPaths(){
+        for i in 0..<path.count{
+            path[i].removeAllPoints()
+        }
+    }
+
 }
 
 extension CGFloat {
