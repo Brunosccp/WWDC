@@ -8,6 +8,7 @@ public class TestViewController : UIViewController {
     let path1 = UIBezierPath()
     let value = UIInterfaceOrientation.landscapeLeft.rawValue
     var demoView = DemoView()
+    var bpm : Double = 120
     
     public override func loadView() {
         let view = UIView()
@@ -36,7 +37,7 @@ public class TestViewController : UIViewController {
     
     @objc func playAction(){
         print("comecou")
-        demoView.startTimer()
+        demoView.startTimer(bpm: bpm)
     }
     @objc func nextCompassAction(){
         print("compasso++")

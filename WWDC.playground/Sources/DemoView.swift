@@ -65,7 +65,7 @@ public class DemoView: UIView{
         }
     }
     
-    public func startTimer(){
+    public func startTimer(bpm: Double){
         compass = 0
         
         clearPaths()
@@ -73,7 +73,7 @@ public class DemoView: UIView{
         self.setNeedsDisplay()
         
         print("chegou")
-        tempo = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(startMusic), userInfo: nil, repeats: true)
+        tempo = Timer.scheduledTimer(timeInterval: 60/bpm, target: self, selector: #selector(startMusic), userInfo: nil, repeats: true)
     }
     @objc func startMusic(){
         self.setNeedsDisplay()
@@ -144,7 +144,7 @@ public class DemoView: UIView{
             /* iOS 10 and earlier require the following line:
              player = try AVAudioPlayer(contentsOf: url, fileTypeHint: AVFileTypeMPEGLayer3) */
             
-            //player[0]!.play()
+            player[0]!.play()
             //print("tamanho: \(player.count)")
             
         } catch let error {
@@ -182,7 +182,6 @@ public class DemoView: UIView{
         }
         
         print("tamanho de notas: \(notas.count)")
-        //print("crests da linha 1: \(notas[4].0), \(notas[4].1), \(notas[4].2), \(notas[4].3)")
         
         clearPaths()
         remakePaths()
