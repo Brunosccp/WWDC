@@ -13,12 +13,12 @@ public class DemoView: UIView{
     
     var path: [UIBezierPath]! = []
     var fingerPosition: CGPoint?
-    var quantity : Int = 4
+    public var quantity : Int = 4
     var inicio = true
-    var notas: [(CGFloat, CGFloat, CGFloat, CGFloat)] = []
+    public var notas: [(CGFloat, CGFloat, CGFloat, CGFloat)] = []
     var tempo = Timer()
     var quarter = 1
-    var compass = 0
+    public var compass = 0
     var lastCompass = 0
     
     var player: [AVAudioPlayer?] = []

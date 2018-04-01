@@ -8,7 +8,8 @@ public class TestViewController : UIViewController {
     let path1 = UIBezierPath()
     let value = UIInterfaceOrientation.landscapeLeft.rawValue
     var demoView = DemoView()
-    var bpm : Double = 120
+    var bpmField = UITextField()
+    var compassLabel = UILabel()
     
     public override func loadView() {
         let view = UIView()
@@ -19,13 +20,26 @@ public class TestViewController : UIViewController {
         let nextCompass = UIButton(frame: CGRect(x: 375 - 50, y: 0, width: 50, height: 50))
         let previousCompass = UIButton(frame: CGRect(x: 375 - 100, y: 0, width: 50, height: 50))
         
+        //creating text field
+        bpmField = UITextField(frame: CGRect(x: 375 - 200, y: 10, width: 50, height: 25))
+        
+        //creating labels
+        compassLabel = UILabel(frame: CGRect(x: 50, y: 0, width: 50, height: 50))
+        compassLabel.text = "\(demoView.compass+1)/\(demoView.notas.count/demoView.quantity)"
+        
         playButton.backgroundColor = .blue
         nextCompass.backgroundColor = .black
         previousCompass.backgroundColor = .gray
+        bpmField.backgroundColor = .white
+        
+        bpmField.keyboardType = UIKeyboardType.decimalPad
+        bpmField.text = "80"
         
         view.addSubview(playButton)
         view.addSubview(nextCompass)
         view.addSubview(previousCompass)
+        view.addSubview(bpmField)
+        view.addSubview(compassLabel)
         
         playButton.addTarget(self, action: #selector(playAction), for: .touchUpInside)
         nextCompass.addTarget(self, action: #selector(nextCompassAction), for: .touchUpInside)
@@ -37,14 +51,26 @@ public class TestViewController : UIViewController {
     
     @objc func playAction(){
         print("comecou")
-        demoView.startTimer(bpm: bpm)
+        if let bpm = Double(bpmField.text!){
+            demoView.startTimer(bpm: bpm)
+        }else{
+            bpmField.text = "80"
+            demoView.startTimer(bpm: 80.0)
+        }
+        
+        
+        
     }
     @objc func nextCompassAction(){
         print("compasso++")
+        compassLabel.text = "\(demoView.compass+1)/\(demoView.notas.count/demoView.quantity)"
+        //self.loadView()
         demoView.nextCompass()
     }
     @objc func previousCompassAction(){
         print("compasso--")
+        compassLabel.text = "\(demoView.compass+1)/\(demoView.notas.count/demoView.quantity)"
+        //self.loadView()
         demoView.previousCompass()
     }
     
@@ -55,11 +81,8 @@ public class TestViewController : UIViewController {
         let height: CGFloat = self.view.frame.size.height
 
         demoView = DemoView(frame: CGRect(x: 0, y: height/15,
-                                                     width: 375,
+                                                     width: width,
                                                      height: 623.466))
-        
-        
-
         
         self.view.addSubview(demoView)
     }
