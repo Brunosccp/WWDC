@@ -29,7 +29,9 @@ public class DemoView: UIView{
     public override init(frame: CGRect) {
         super.init(frame: frame)
         
-        self.backgroundColor = UIColor.white
+        self.backgroundColor = UIColor.darkGray
+        self.layer.borderWidth = 1
+        self.layer.borderColor = UIColor(red:222/255, green:225/255, blue:227/255, alpha: 1).cgColor
     
         for _ in 1...quantity{
             notas.append((0, 0, 0, 0))
@@ -84,9 +86,22 @@ public class DemoView: UIView{
         self.setNeedsDisplay()
         
         //print("compasso: \(compass)")
-        
+        var instrument: String = ""
         var noteCrest : CGFloat = 0
         for i in 0..<quantity{
+            switch i {
+            case 0:
+                instrument = "Notes/guitarra"
+            case 1:
+                instrument = "Notes/baixo"
+            case 2:
+                instrument = "Notes/piano"
+            case 3:
+                instrument = "Notes/bateria"
+            default:
+                print("ERROR: i out of index")
+            }
+            
             switch quarter {
             case 1:
                 noteCrest = notas[(compass * quantity) + i].0
@@ -100,6 +115,7 @@ public class DemoView: UIView{
                 print("ERROR: quarter out of index")
             }
             
+            
             //no note
             if((noteCrest <= 50 / 8) && (noteCrest >= 50 / -8)){
                 //print("é a nota 0")
@@ -107,11 +123,16 @@ public class DemoView: UIView{
                 for i in 1...7{
                     if(noteCrest >= (CGFloat(i) * 50 / 8) && noteCrest <= (CGFloat(i+1) * 50 / 8)){
                         //print("é a nota \(i)")
-                        playNote(instrument: "piano", getNoteName(i) + "2")
+                        if(instrument != "Notes/bateria"){
+                        playNote(instrument: instrument, getNoteName(i) + "2")
+                        }else{
+                            playNote(instrument: instrument, getNoteName(i) + "1")
+                        }
                     }
                     else if(noteCrest <= (CGFloat(i) * 50 / -8) && noteCrest >= (CGFloat(i+1) * 50 / -8)){
                         //print("é a nota -\(i)")
-                        playNote(instrument: "piano", getNoteName(i) + "1")
+                        playNote(instrument: instrument, getNoteName(i) + "1")
+                        
                     }
                 }
             }
@@ -143,12 +164,10 @@ public class DemoView: UIView{
         do {
             try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
             try AVAudioSession.sharedInstance().setActive(true)
-            /* The following line is required for the player to work on iOS 11. Change the file type accordingly*/
+
             if (player.count >= 16){  player.remove(at: player.count-1)}
             player.insert(try AVAudioPlayer(contentsOf: url, fileTypeHint: AVFileType.mp3.rawValue), at: 0)
             
-            /* iOS 10 and earlier require the following line:
-             player = try AVAudioPlayer(contentsOf: url, fileTypeHint: AVFileTypeMPEGLayer3) */
             
             player[0]!.play()
             //print("tamanho: \(player.count)")
@@ -261,8 +280,13 @@ public class DemoView: UIView{
                             noteLabel.text = nil
                             noteLabel = UILabel(frame: CGRect(x: CGFloat(tempoAtual) * self.frame.size.width / 5 - 30,
                                 y: height - crest - 20, width: 30, height: 20))
-                            noteLabel.text = "\(getNoteName(i))"
+                            if(linhaAtual != 3){
+                                noteLabel.text = "\(getNoteName(i))"
+                            }else{
+                                noteLabel.text = "\(i)"
+                            }
                             noteLabel.textAlignment = .center
+                            noteLabel.textColor = .white
                             
                             self.addSubview(noteLabel)
                         }
@@ -270,8 +294,13 @@ public class DemoView: UIView{
                             noteLabel.text = nil
                             noteLabel = UILabel(frame: CGRect(x: CGFloat(tempoAtual) * self.frame.size.width / 5 - 30,
                                                               y:height - crest + 0, width: 30, height: 20))
-                            noteLabel.text = "\(getNoteName(i))"
+                            if(linhaAtual != 3){
+                                noteLabel.text = "\(getNoteName(i))"
+                            }else{
+                                noteLabel.text = "\(i)"
+                            }
                             noteLabel.textAlignment = .center
+                            noteLabel.textColor = .white
                             
                             self.addSubview(noteLabel)
                         }
@@ -296,7 +325,7 @@ public class DemoView: UIView{
         path.addLine(to: CGPoint(x: self.frame.size.width, y: height))
         path.lineWidth = 5.0
         
-        UIColor.purple.setStroke()
+        UIColor.white.setStroke()
         path.stroke()
     }
     public func timeLines(){
@@ -341,7 +370,7 @@ public class DemoView: UIView{
             path.lineWidth = 5.0
             
         }
-        UIColor.purple.setStroke()
+        UIColor.white.setStroke()
         path.stroke()
     }
     
